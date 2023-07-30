@@ -31,7 +31,6 @@ function Login() {
 
   return (
     <>
-      <Navbar />
       <div className="flex flex-col items-center justify-center h-screen">
         <h1 className="text-4xl font-semibold mb-6">Login to see all the courses</h1>
         <form className="flex flex-col space-y-4">
@@ -66,7 +65,6 @@ function Login() {
           Already a user? <a href="/register">Register</a>
         </p>
       </div>
-      <Footer />
     </>
 
   );

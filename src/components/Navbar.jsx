@@ -57,7 +57,7 @@ const Navbar = () => {
               </button>
               <button
                 onClick={() => {
-                  window.location.replace(`${BASE_URL}/courses`);
+                  window.open(`https://course-mart-admin-dashboard-zubair-05.vercel.app/`, '_blank');
                 }}
                 className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition-colors ml-4"
               >
