@@ -1,41 +1,46 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import { BASE_URL } from "../../config";
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { purchasedCourseState, purchasedloadingState } from '../store/course';
+import PurchasedCourseSkeleton from '../utils/PurchasedCourseSkeleton';
+import { BASE_URL } from '../../config';
 
 const PurchasedCourse = () => {
   const token = localStorage.getItem('userToken');
 
-  const [purchasedCourse, setPurchasedCourse] = useState([]);
+  const [purchasedCourse, setPurchasedCourse] = useRecoilState(purchasedCourseState);
+  const [loading, setLoading] = useRecoilState(purchasedloadingState);
   useEffect(() => {
-    const getPurchasedCourse = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/users/purchasedCourses`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('userToken')}`
+      setLoading(true);
+      const getPurchasedCourse = async () => {
+          try {
+              const response = await fetch(`${BASE_URL}/users/purchasedCourses`, {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${localStorage.getItem('userToken')}`
+                  }
+              });
+              const data = await response.json();
+              console.log(`response from the server`);
+              console.log(data);
+                  setLoading(false);
+                  setPurchasedCourse(data.purchasedCourses);
+          } catch (error) {
+              console.log(error);
           }
-        });
-        const data = await response.json();
-        console.log(`response from the server`);
-        console.log(data);
-        setPurchasedCourse(data.purchasedCourses);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+      };
 
-    getPurchasedCourse();
+      getPurchasedCourse();
   }, []);
-
-
-
-
+  
   if (!token) {
     return <Navigate to="/login" />
   }
+
+  if(loading) return (
+    <PurchasedCourseSkeleton />
+  )
 
   return (
     <>

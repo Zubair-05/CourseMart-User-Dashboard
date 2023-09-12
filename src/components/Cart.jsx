@@ -2,9 +2,9 @@ import React, { useEffect } from 'react'
 import { useNavigate, } from 'react-router-dom';
 // import { Navigate } from 'react-router-dom';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
-import { cartState, cartTotal, cartCount } from '../store/course';
-import { BASE_URL } from "../../config";
-
+import { cartState, cartTotal, cartCount, cartLoadingState } from '../store/course';
+import CartSkeleton from '../utils/CartSkeleton';
+import { BASE_URL } from '../../config';
 
 const Cart = () => {
     const token = localStorage.getItem('userToken');
@@ -15,10 +15,13 @@ const Cart = () => {
 
     const navigate = useNavigate();
     const [cart, setCart] = useRecoilState(cartState);
+    const isLoading = useRecoilValue(cartLoadingState);
     const TotalPrice = useRecoilValue(cartTotal);
     const numberOfItems = useRecoilValue(cartCount);
-
+    // const setCart = useSetRecoilState(cartState);
+    const [loading, setLoading] = useRecoilState(cartLoadingState);
     useEffect(() => {
+        setLoading(true);
         const fetchCart = async () => {
             try {
                 const response = await fetch(`${BASE_URL}/users/cart`, {
@@ -31,13 +34,19 @@ const Cart = () => {
                 const data = await response.json();
                 console.log('response from the server');
                 console.log(data.cart);
-                setCart(data.cart);
+                    setLoading(false);
+                    setCart(data.cart);
             } catch (error) {
                 console.log(error);
             }
         };
         fetchCart();
     }, []);
+
+    if(isLoading){
+        return <CartSkeleton />
+    }
+
 
     return (
         <div className="flex flex-col md:flex-row">
@@ -93,7 +102,7 @@ export const Course = (props) => {
     };
 
     const handleRemove = async () => {
-        const response = await fetch(`http://localhost:3000/users/cart/${props.courseId}`, {
+        const response = await fetch(`${BASE_URL}/users/cart/${props.courseId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -111,16 +120,15 @@ export const Course = (props) => {
         
         <div className="border border-gray-300 rounded p-4 hover:bg-gray-100 transition-colors cursor-pointer ">
 
-            <div className="flex justify-between">
+            <div className="flex sm:justify-between flex-col sm:flex-row">
                 {/* Course Details */}
                 <div>
                     <h2 className="text-xl font-bold mb-2">{props.title}</h2>
-                    <p className="mb-2">{props.description}</p>
                     <p className="mb-2">Price: ${props.price}</p>
                 </div>
 
                 {/* Image */}
-                <div className="flex justify-end">
+                <div className="flex justify-center sm:justify-end mb-2 md:mt-0">
                     <img
                         src={props.image}
                         alt="course image"
@@ -130,7 +138,7 @@ export const Course = (props) => {
                 </div>
             </div>
 
-            <div className="flex ">
+            <div className="flex justify-center sm:justify-start">
                 <button
                     onClick={handleClick}
                     className="bg-blue-500 text-white py-2 px-4 mt-3 rounded hover:bg-blue-600 transition-colors mr-2"

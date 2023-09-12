@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from './Navbar';
-import Footer from './Footer';
+import Navbar from '../utils/Navbar';
+import Footer from '../utils/Footer';
 import { BASE_URL } from "../../config";
 
 function Register() {

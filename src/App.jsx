@@ -2,18 +2,24 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
 import Courses from './components/Courses';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from './utils/Navbar';
+import Footer from './utils/Footer';
 import PurchasedCourses from './components/PurchasedCourses';
 import CourseDetails from './components/CourseDetails';
 import LandingPage from './components/LandingPage';
 import UpdateProfile from './components/UpdateProfile';
 import Profile from './components/Profile';
 import Cart from './components/Cart';
+import Init from './utils/Init';
+import InitCart from './utils/InitCart';
+import InitPurchased from './utils/InitPurchased';
 
 export default function App() {
   return (
     <Router>
+      <Init />
+      <InitCart />
+      <InitPurchased />
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />

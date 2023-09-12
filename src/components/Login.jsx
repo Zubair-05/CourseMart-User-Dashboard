@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from './Navbar';
-import Footer from './Footer';
+import Navbar from '../utils/Navbar';
+import Footer from '../utils/Footer';
 import { BASE_URL } from "../../config";
 
 function Login() {
@@ -10,6 +10,16 @@ function Login() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userToken = localStorage.getItem("userToken");
+    if (userToken) {
+      navigate("/courses");
+      return;
+    }
+  })
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await fetch(`${BASE_URL}/users/login`, {

@@ -10,6 +10,11 @@ export const cartState = atom({
     default: []
 });
 
+export const purchasedCourseState = atom({
+    key: 'purchasedCourseState',
+    default: []
+});
+
 export const courseDetails = atom({
     key: 'courseDetails',
     default: {
@@ -43,4 +48,19 @@ export const cartCount = selector({
         const cart = get(cartState);
         return cart.length;
     }
+});
+
+export const purchasedloadingState = atom({
+    key: 'loadingState',
+    default: false
+});
+
+export const courseLoaingState = atom({
+    key: 'courseLoaingState',
+    default: false
+});
+
+export const cartLoadingState = atom({
+    key: 'cartLoadingState',
+    default: false
 });

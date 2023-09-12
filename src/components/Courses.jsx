@@ -1,57 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../config";
+import CourseSkeleton from "../utils/CourseSkeleton";
+import { courseState, courseLoaingState } from "../store/course";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 function ShowCourses() {
-    const [courses, setCourses] = useState([]);
+    
     const navigate = useNavigate();
+    const courses = useRecoilValue(courseState);
+    const isLoading = useRecoilValue(courseLoaingState);
+    const userToken = localStorage.getItem("userToken");
+    if (!userToken) {
+        navigate("/");
+        return;
+    }
 
 
 
-    useEffect(() => {
-        const userToken = localStorage.getItem("userToken");
-        if (!userToken) {
-            navigate("/");
-            return;
-        }
-        const getCourses = async () => {
-            try {
-                const response = await fetch(`${BASE_URL}/users/courses`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-                    },
-                });
-                const data = await response.json();
-                console.log(`response from the server`);
-                console.log(data);
-                setCourses(data.courses);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        getCourses();
-    }, []);
-
-    const handleCourseDelete = async (courseId) => {
-        try {
-            await fetch(`http://localhost:3000/admin/courses/${courseId}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            setCourses(courses.filter((course) => course._id !== courseId));
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    if (isLoading) {
+        return <CourseSkeleton />;
+    }
 
     return (
         <>
-    
+
             <div className="container mx-auto">
                 <h1 className="text-3xl font-semibold text-center my-6">
                     Unleash Your Knowledge
@@ -67,15 +40,15 @@ function ShowCourses() {
                                 price={c.price}
                                 image={c.imageLink}
                                 description={c.description}
-                                onCourseDelete={handleCourseDelete}
+                                // onCourseDelete={handleCourseDelete}
                             />
                         ))
                     ) : (
                         <p>No courses found.</p>
-                    )}
+                    ) }
                 </div>
             </div>
-   
+
         </>
 
     );
@@ -96,11 +69,7 @@ function Course(props) {
         });
     };
 
-    const handleDelete = () => {
-        if (window.confirm("Are you sure you want to delete this course?")) {
-            props.onCourseDelete(props.courseId);
-        }
-    };
+
 
     return (
         <div className="border border-gray-300  rounded p-4 hover:bg-gray-100 transition-colors cursor-pointer">
